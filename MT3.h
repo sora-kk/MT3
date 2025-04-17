@@ -3,6 +3,8 @@
 #include <math.h>
 #include <Vector2.h>
 #include <Vector3.h>
+#include <Matrix3x3.h>
+#include <Matrix4x4.h>
 
 class Vector {
 public:
@@ -61,5 +63,33 @@ public:
 	void VectorScreenPrintf(const Vector2 &pos, const Vector3 &vector, const char *label);
 
 private:
+	static const int kColumnWidth = 60;
+};
+
+class Matrix {
+public:
+	// 行列の加法
+	Matrix4x4 add(const Matrix4x4 &m1, const Matrix4x4 &m2);
+
+	// 行列の減法
+	Matrix4x4 Subtract(const Matrix4x4 &m1, const Matrix4x4 &m2);
+
+	// 行列の積
+	Matrix4x4 Multiply(const Matrix4x4 &m1, const Matrix4x4 &m2);
+
+	// 逆行列
+	Matrix4x4 Inverse(const Matrix4x4 &m);
+
+	// 転置行列
+	Matrix4x4 Transpose(const Matrix4x4 &m);
+
+	// 単位行列
+	Matrix4x4 MakeIdentity4x4();
+
+	// 描画関数
+	void MatrixScreenPrintf(int x, int y, const Matrix4x4 &m);
+
+private:
+	static const int kRowHeight = 20;
 	static const int kColumnWidth = 60;
 };

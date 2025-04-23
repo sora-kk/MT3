@@ -28,7 +28,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Vector> vector;
 	std::unique_ptr<Matrix> matrix;
 
+	Vector3 scale{ 1.2f,0.79f,-2.1f };
 	Vector3 rotate{ 0.4f,1.43f,-0.8f };
+	Vector3 translate{ 2.7f,-4.15f,1.57f };
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -51,11 +53,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 更新処理 ここから
 		///===================
 
-		Matrix4x4 rotateXMatrix = matrix->MakeRotateXMatrix(rotate.x);
-		Matrix4x4 rotateYMatrix = matrix->MakeRotateYMatrix(rotate.y);
-		Matrix4x4 rotateZMatrix = matrix->MakeRotateZMatrix(rotate.z);
-
-		Matrix4x4 rotateXYZMatrix = matrix->Multiply(rotateXMatrix, matrix->Multiply(rotateYMatrix, rotateZMatrix));
+		Matrix4x4 worldMatrix = matrix->MakeAffineMatrix(scale, rotate, translate);
 
 		///===================
 		/// ↑ 更新処理 ここまで
@@ -65,11 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 描画処理 ここから
 		///===================
 
-		matrix->MatrixScreenPrintf(0, 0, rotateXMatrix);
-		matrix->MatrixScreenPrintf(0, kRowHeight * 5, rotateYMatrix);
-		matrix->MatrixScreenPrintf(0, kRowHeight * 5 * 2, rotateZMatrix);
-		matrix->MatrixScreenPrintf(0, kRowHeight * 5 * 3, rotateXYZMatrix);
-
+		matrix->MatrixScreenPrintf(0, 0, worldMatrix);
 
 		///===================
 		/// ↑ 描画処理 ここまで

@@ -2,7 +2,7 @@
 #include <memory>
 #include "MT3.h"
 
-const char kWindowTitle[] = "LC1C_11_ダイドウソラ_MT3_00_03";
+const char kWindowTitle[] = "LC1C_11_ダイドウソラ_MT3_00_04";
 
 // ローカル変数の宣言と初期化
 const float kWinWidth = 1280.0f;
@@ -28,16 +28,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Vector> vector;
 	std::unique_ptr<Matrix> matrix;
 
-	Vector3 translate{ 4.1f,2.6f,0.8f };
-	Vector3 scale{ 1.5f,5.2f,7.3f };
-	Vector3 point{ 2.3f,3.8f,1.4f };
-
-	Matrix4x4 transformMatrix = {
-		1.0f,2.0f,3.0f,4.0f,
-		3.0f,1.0f,1.0f,2.0f,
-		1.0f,4.0f,2.0f,3.0f,
-		2.0f,2.0f,1.0f,3.0f,
-	};
+	Vector3 rotate{ 0.4f,1.43f,-0.8f };
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -60,9 +51,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 更新処理 ここから
 		///===================
 
-		Matrix4x4 translateMatrix = matrix->MakeTranslateMatrix(translate);
-		Matrix4x4 scaleMatrix = matrix->MakeScaleMatrix(scale);
-		Vector3 transformed = vector->Transform(point, transformMatrix);
+		Matrix4x4 rotateXMatrix = matrix->MakeRotateXMatrix(rotate.x);
+		Matrix4x4 rotateYMatrix = matrix->MakeRotateYMatrix(rotate.y);
+		Matrix4x4 rotateZMatrix = matrix->MakeRotateZMatrix(rotate.z);
+
+		Matrix4x4 rotateXYZMatrix = matrix->Multiply(rotateXMatrix, matrix->Multiply(rotateYMatrix, rotateZMatrix));
 
 		///===================
 		/// ↑ 更新処理 ここまで
@@ -72,9 +65,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 描画処理 ここから
 		///===================
 
-		vector->VectorScreenPrintf({ 0.0f,0.0f }, transformed, "transformed");
-		matrix->MatrixScreenPrintf(0, kRowHeight * 2, translateMatrix);
-		matrix->MatrixScreenPrintf(0, kRowHeight * 7, scaleMatrix);
+		matrix->MatrixScreenPrintf(0, 0, rotateXMatrix);
+		matrix->MatrixScreenPrintf(0, kRowHeight * 5, rotateYMatrix);
+		matrix->MatrixScreenPrintf(0, kRowHeight * 5 * 2, rotateZMatrix);
+		matrix->MatrixScreenPrintf(0, kRowHeight * 5 * 3, rotateXYZMatrix);
+
 
 		///===================
 		/// ↑ 描画処理 ここまで

@@ -1,5 +1,7 @@
 ﻿#include "MT3.h"
 
+using namespace std;
+
 // 3次元ベクトルの加算
 Vector3 Vector::Add(const Vector3 &v1, const Vector3 &v2) {
 	Vector3 result = { v1.x + v2.x,v1.y + v2.y,v1.z + v2.z };
@@ -263,7 +265,7 @@ Matrix4x4 Matrix::MakeIdentity4x4() {
 void Matrix::MatrixScreenPrintf(int x, int y, const Matrix4x4 &m) {
 	for (int row = 0; row < 4; ++row) {
 		for (int column = 0; column < 4; ++column) {
-			Novice::ScreenPrintf(x + column * kColumnWidth, y + row * kRowHeight, "%.01f", m.m[row][column]);
+			Novice::ScreenPrintf(x + column * kColumnWidth, y + row * kRowHeight, "%.02f", m.m[row][column]);
 		}
 	}
 }
@@ -287,5 +289,41 @@ Matrix4x4 Matrix::MakeScaleMatrix(const Vector3 &scale) {
 	result.m[1][1] = scale.y;
 	result.m[2][2] = scale.z;
 
-	return Matrix4x4();
+	return result;
+}
+
+// 4x4X軸回転行列
+Matrix4x4 Matrix::MakeRotateXMatrix(float radian) {
+	Matrix4x4 result = MakeIdentity4x4();
+
+	result.m[1][1] = cos(radian);
+	result.m[1][2] = sin(radian);
+	result.m[2][1] = -sin(radian);
+	result.m[2][2] = cos(radian);
+
+	return result;
+}
+
+// 4x4Y軸回転行列
+Matrix4x4 Matrix::MakeRotateYMatrix(float radian) {
+	Matrix4x4 result = MakeIdentity4x4();
+
+	result.m[0][0] = cos(radian);
+	result.m[0][2] = -sin(radian);
+	result.m[2][0] = sin(radian);
+	result.m[2][2] = cos(radian);
+
+	return result;
+}
+
+// 4x4Z軸回転行列
+Matrix4x4 Matrix::MakeRotateZMatrix(float radian) {
+	Matrix4x4 result = MakeIdentity4x4();
+
+	result.m[0][0] = cos(radian);
+	result.m[0][1] = sin(radian);
+	result.m[1][0] = -sin(radian);
+	result.m[1][1] = cos(radian);
+
+	return result;
 }

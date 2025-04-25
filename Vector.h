@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <Novice.h>
 #include <cmath>
 #include <assert.h>
@@ -8,28 +8,28 @@
 
 class Vector {
 public:
-	// ‰ÁZ
+	// åŠ ç®—
 	Vector3 Add(const Vector3 &v1, const Vector3 &v2);
 
-	// Œ¸Z
+	// æ¸›ç®—
 	Vector3 Subtract(const Vector3 &v1, const Vector3 &v2);
 
-	// æZ(ƒXƒJƒ‰[”{)
+	// ä¹—ç®—(ã‚¹ã‚«ãƒ©ãƒ¼å€)
 	Vector3 Multiply(float scalar, const Vector3 &v);
 
-	// “àÏ
+	// å†…ç©
 	float Dot(const Vector3 &v1, const Vector3 &v2);
 
-	// ƒmƒ‹ƒ€(’·‚³)
+	// ãƒãƒ«ãƒ (é•·ã•)
 	float Length(const Vector3 &v);
 
-	// ³‹K‰»
+	// æ­£è¦åŒ–
 	Vector3 Normalize(const Vector3 &v);
 
-	// •`‰æŠÖ”
+	// æç”»é–¢æ•°
 	void VectorScreenPrintf(const Vector2 &pos, const Vector3 &vector, const char *label);
 
-	// À•W•ÏŠ·
+	// åº§æ¨™å¤‰æ›
 	Vector3 Transform(const Vector3 &vector, const Matrix4x4 &matrix);
 
 private:

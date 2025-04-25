@@ -39,7 +39,7 @@ Vector3 Vector::Normalize(const Vector3 &v) {
 }
 
 // 描画関数
-void Vector::VectorScreenPrintf(const Vector2 &pos, const Vector3 &vector, const char *label) {
+void Vector::ScreenPrintf(const Vector2 &pos, const Vector3 &vector, const char *label) {
 	Novice::ScreenPrintf(static_cast<int>(pos.x), static_cast<int>(pos.y), "%.02f", vector.x);
 	Novice::ScreenPrintf(static_cast<int>(pos.x + kColumnWidth), static_cast<int>(pos.y), "%.02f", vector.y);
 	Novice::ScreenPrintf(static_cast<int>(pos.x + kColumnWidth * 2), static_cast<int>(pos.y), "%.02f", vector.z);
@@ -60,5 +60,16 @@ Vector3 Vector::Transform(const Vector3 &vector, const Matrix4x4 &matrix) {
 	result.y /= w;
 	result.z /= w;
 
-	return Vector3();
+	return result;
+}
+
+// クロス積
+Vector3 Vector::Cross(const Vector3 &v1, const Vector3 &v2) {
+	Vector3 result{};
+
+	result.x = v1.y * v2.z - v1.z * v2.y;
+	result.y = v1.z * v2.x - v1.x * v2.z;
+	result.z = v1.x * v2.y - v1.y * v2.x;
+
+	return result;
 }

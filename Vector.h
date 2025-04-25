@@ -27,10 +27,13 @@ public:
 	Vector3 Normalize(const Vector3 &v);
 
 	// 描画関数
-	void VectorScreenPrintf(const Vector2 &pos, const Vector3 &vector, const char *label);
+	void ScreenPrintf(const Vector2 &pos, const Vector3 &vector, const char *label);
 
 	// 座標変換
 	Vector3 Transform(const Vector3 &vector, const Matrix4x4 &matrix);
+
+	// クロス積
+	Vector3 Cross(const Vector3 &v1, const Vector3 &v2);
 
 private:
 	static const int kRowHeight = 20;

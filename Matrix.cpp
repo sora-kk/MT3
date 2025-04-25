@@ -1,8 +1,8 @@
-#include "Matrix.h"
+ï»¿#include "Matrix.h"
 
 using namespace std;
 
-// ‰Á–@
+// åŠ æ³•
 Matrix4x4 Matrix::add(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	Matrix4x4 result{};
 
@@ -15,7 +15,7 @@ Matrix4x4 Matrix::add(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	return result;
 }
 
-// Œ¸–@
+// æ¸›æ³•
 Matrix4x4 Matrix::Subtract(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	Matrix4x4 result{};
 
@@ -28,7 +28,7 @@ Matrix4x4 Matrix::Subtract(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	return result;
 }
 
-// Ï
+// ç©
 Matrix4x4 Matrix::Multiply(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	Matrix4x4 result{};
 
@@ -43,7 +43,7 @@ Matrix4x4 Matrix::Multiply(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	return result;
 }
 
-// ‹ts—ñ
+// é€†è¡Œåˆ—
 Matrix4x4 Matrix::Inverse(const Matrix4x4 &m) {
 	Matrix4x4 result{};
 
@@ -176,7 +176,7 @@ Matrix4x4 Matrix::Inverse(const Matrix4x4 &m) {
 	return result;
 }
 
-// “]’us—ñ
+// è»¢ç½®è¡Œåˆ—
 Matrix4x4 Matrix::Transpose(const Matrix4x4 &m) {
 	Matrix4x4 result{};
 
@@ -189,7 +189,7 @@ Matrix4x4 Matrix::Transpose(const Matrix4x4 &m) {
 	return result;
 }
 
-// ’PˆÊs—ñ
+// å˜ä½è¡Œåˆ—
 Matrix4x4 Matrix::MakeIdentity4x4() {
 	Matrix4x4 result{};
 
@@ -200,7 +200,7 @@ Matrix4x4 Matrix::MakeIdentity4x4() {
 	return result;
 }
 
-// •½sˆÚ“®s—ñ
+// å¹³è¡Œç§»å‹•è¡Œåˆ—
 Matrix4x4 Matrix::MakeTranslateMatrix(const Vector3 &translate) {
 	Matrix4x4 result = MakeIdentity4x4();
 
@@ -211,7 +211,7 @@ Matrix4x4 Matrix::MakeTranslateMatrix(const Vector3 &translate) {
 	return result;
 }
 
-// Šg‘åk¬s—ñ
+// æ‹¡å¤§ç¸®å°è¡Œåˆ—
 Matrix4x4 Matrix::MakeScaleMatrix(const Vector3 &scale) {
 	Matrix4x4 result = MakeIdentity4x4();
 
@@ -222,7 +222,7 @@ Matrix4x4 Matrix::MakeScaleMatrix(const Vector3 &scale) {
 	return result;
 }
 
-// X²‰ñ“]s—ñ
+// Xè»¸å›è»¢è¡Œåˆ—
 Matrix4x4 Matrix::MakeRotateXMatrix(float radian) {
 	Matrix4x4 result = MakeIdentity4x4();
 
@@ -234,7 +234,7 @@ Matrix4x4 Matrix::MakeRotateXMatrix(float radian) {
 	return result;
 }
 
-// Y²‰ñ“]s—ñ
+// Yè»¸å›è»¢è¡Œåˆ—
 Matrix4x4 Matrix::MakeRotateYMatrix(float radian) {
 	Matrix4x4 result = MakeIdentity4x4();
 
@@ -246,7 +246,7 @@ Matrix4x4 Matrix::MakeRotateYMatrix(float radian) {
 	return result;
 }
 
-// Z²‰ñ“]s—ñ
+// Zè»¸å›è»¢è¡Œåˆ—
 Matrix4x4 Matrix::MakeRotateZMatrix(float radian) {
 	Matrix4x4 result = MakeIdentity4x4();
 
@@ -258,7 +258,7 @@ Matrix4x4 Matrix::MakeRotateZMatrix(float radian) {
 	return result;
 }
 
-// ƒAƒtƒBƒ“•ÏŠ·s—ñ
+// ã‚¢ãƒ•ã‚£ãƒ³å¤‰æ›è¡Œåˆ—
 Matrix4x4 Matrix::MakeAffineMatrix(const Vector3 &scale, const Vector3 &rotate, const Vector3 &translate) {
 	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
 
@@ -273,8 +273,94 @@ Matrix4x4 Matrix::MakeAffineMatrix(const Vector3 &scale, const Vector3 &rotate, 
 	return affineMatrix;
 }
 
-// •`‰æŠÖ”
-void Matrix::MatrixScreenPrintf(int x, int y, const Matrix4x4 &m) {
+// é€è¦–æŠ•å½±è¡Œåˆ—
+Matrix4x4 Matrix::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
+	Matrix4x4 result{};
+	float f = 1.0f / tan(fovY / 2.0f);
+	float fRange = farClip / (farClip - nearClip);
+
+	result.m[0][0] = f / aspectRatio;
+	result.m[0][1] = 0.0f;
+	result.m[0][2] = 0.0f;
+	result.m[0][3] = 0.0f;
+
+	result.m[1][0] = 0.0f;
+	result.m[1][1] = f;
+	result.m[1][2] = 0.0f;
+	result.m[1][3] = 0.0f;
+
+	result.m[2][0] = 0.0f;
+	result.m[2][1] = 0.0f;
+	result.m[2][2] = fRange;
+	result.m[2][3] = 1.0f;
+
+	result.m[3][0] = 0.0f;
+	result.m[3][1] = 0.0f;
+	result.m[3][2] = -fRange * nearClip;
+	result.m[3][3] = 0.0f;
+
+	return result;
+}
+
+// æ­£å°„å½±è¡Œåˆ—
+Matrix4x4 Matrix::MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip) {
+	Matrix4x4 result{};
+	float width = right - left;
+	float height = top - bottom;
+	float depth = farClip - nearClip;
+
+	result.m[0][0] = 2.0f / width;
+	result.m[0][1] = 0.0f;
+	result.m[0][2] = 0.0f;
+	result.m[0][3] = 0.0f;
+
+	result.m[1][0] = 0.0f;
+	result.m[1][1] = 2.0f / height;
+	result.m[1][2] = 0.0f;
+	result.m[1][3] = 0.0f;
+
+	result.m[2][0] = 0.0f;
+	result.m[2][1] = 0.0f;
+	result.m[2][2] = 1.0f / depth;
+	result.m[2][3] = 0.0f;
+
+	result.m[3][0] = -(right + left) / width;
+	result.m[3][1] = -(top + bottom) / height;
+	result.m[3][2] = -nearClip / depth;
+	result.m[3][3] = 1.0f;
+
+	return result;
+}
+
+// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆå¤‰æ›
+Matrix4x4 Matrix::MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth) {
+	Matrix4x4 result{};
+
+	result.m[0][0] = width / 2.0f;
+	result.m[0][1] = 0.0f;
+	result.m[0][2] = 0.0f;
+	result.m[0][3] = 0.0f;
+
+	result.m[1][0] = 0.0f;
+	result.m[1][1] = -height / 2.0f;
+	result.m[1][2] = 0.0f;
+	result.m[1][3] = 0.0f;
+
+	result.m[2][0] = 0.0f;
+	result.m[2][1] = 0.0f;
+	result.m[2][2] = maxDepth - minDepth;
+	result.m[2][3] = 0.0f;
+
+	result.m[3][0] = left + width / 2.0f;
+	result.m[3][1] = top + height / 2.0f;
+	result.m[3][2] = minDepth;
+	result.m[3][3] = 1.0f;
+
+	return result;
+}
+
+// æç”»é–¢æ•°
+void Matrix::ScreenPrintf(int x, int y, const Matrix4x4 &m) {
 	for (int row = 0; row < 4; ++row) {
 		for (int column = 0; column < 4; ++column) {
 			Novice::ScreenPrintf(x + column * kColumnWidth, y + row * kRowHeight, "%.02f", m.m[row][column]);

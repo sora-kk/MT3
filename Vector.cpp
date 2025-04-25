@@ -1,44 +1,44 @@
-#include "Vector.h"
+ï»¿#include "Vector.h"
 
 using namespace std;
 
-// ‰ÁZ
+// åŠ ç®—
 Vector3 Vector::Add(const Vector3 &v1, const Vector3 &v2) {
 	Vector3 result = { v1.x + v2.x,v1.y + v2.y,v1.z + v2.z };
 	return result;
 }
 
-// Œ¸Z
+// æ¸›ç®—
 Vector3 Vector::Subtract(const Vector3 &v1, const Vector3 &v2) {
 	Vector3 result = { v1.x - v2.x,v1.y - v2.y,v1.z - v2.z };
 	return result;
 }
 
-// æZ(ƒXƒJƒ‰[”{)
+// ä¹—ç®—(ã‚¹ã‚«ãƒ©ãƒ¼å€)
 Vector3 Vector::Multiply(float scalar, const Vector3 &v) {
 	Vector3 result = { scalar * v.x,scalar * v.y,scalar * v.z };
 	return result;
 }
 
-// “àÏ
+// å†…ç©
 float Vector::Dot(const Vector3 &v1, const Vector3 &v2) {
 	float result = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 	return result;
 }
 
-// ƒmƒ‹ƒ€(’·‚³)
+// ãƒãƒ«ãƒ (é•·ã•)
 float Vector::Length(const Vector3 &v) {
 	float result = sqrtf({ v.x * v.x + v.y * v.y + v.z * v.z });
 	return result;
 }
 
-// ³‹K‰»
+// æ­£è¦åŒ–
 Vector3 Vector::Normalize(const Vector3 &v) {
 	Vector3 result = { v.x / Length(v),v.y / Length(v),v.z / Length(v) };
 	return result;
 }
 
-// •`‰æŠÖ”
+// æç”»é–¢æ•°
 void Vector::VectorScreenPrintf(const Vector2 &pos, const Vector3 &vector, const char *label) {
 	Novice::ScreenPrintf(static_cast<int>(pos.x), static_cast<int>(pos.y), "%.02f", vector.x);
 	Novice::ScreenPrintf(static_cast<int>(pos.x + kColumnWidth), static_cast<int>(pos.y), "%.02f", vector.y);
@@ -46,7 +46,7 @@ void Vector::VectorScreenPrintf(const Vector2 &pos, const Vector3 &vector, const
 	Novice::ScreenPrintf(static_cast<int>(pos.x + kColumnWidth * 3), static_cast<int>(pos.y), "%s", label);
 }
 
-// À•W•ÏŠ·
+// åº§æ¨™å¤‰æ›
 Vector3 Vector::Transform(const Vector3 &vector, const Matrix4x4 &matrix) {
 	Vector3 result{};
 

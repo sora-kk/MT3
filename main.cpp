@@ -1,14 +1,16 @@
 #include <Novice.h>
 #include <memory>
-#include "MT3.h"
+#include "Vector.h"
+#include "Matrix.h"
 
-const char kWindowTitle[] = "LC1C_11_ダイドウソラ_MT3_00_01";
+const char kWindowTitle[] = "LC1C_11_ダイドウソラ_MT3_00_04";
 
 // ローカル変数の宣言と初期化
 const float kWinWidth = 1280.0f;
 const float kWinHeight = 720.0f;
 
-static const float kRowHeight = 20.0f;
+static const int kRowHeight = 20;
+static const int kColumnWidth = 60;
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -24,11 +26,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// ↓ 変数の宣言と初期化
 	///====================
 
-	Vector3	v1{ 1.0f,3.0f,-5.0f };
-	Vector3	v2{ 4.0f,-1.0f,2.0f };
-	float k = 4.0f;
-
 	std::unique_ptr<Vector> vector;
+	std::unique_ptr<Matrix> matrix;
+
+	Vector3 scale{ 1.2f,0.79f,-2.1f };
+	Vector3 rotate{ 0.4f,1.43f,-0.8f };
+	Vector3 translate{ 2.7f,-4.15f,1.57f };
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -51,12 +54,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 更新処理 ここから
 		///===================
 
-		Vector3 resultAdd = vector->Add(v1, v2);
-		Vector3 resultSubtract = vector->Subtract(v1, v2);
-		Vector3 resultMultiply = vector->Multiply(k, v1);
-		float resultDot = vector->Dot(v1, v2);
-		float resultLength = vector->Length(v1);
-		Vector3 resultNormalize = vector->Normalize(v2);
+		Matrix4x4 worldMatrix = matrix->MakeAffineMatrix(scale, rotate, translate);
 
 		///===================
 		/// ↑ 更新処理 ここまで
@@ -66,12 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 描画処理 ここから
 		///===================
 
-		vector->VectorScreenPrintf(Vector2{ 0.0f,0.0f }, resultAdd, " : Add");
-		vector->VectorScreenPrintf(Vector2{ 0.0f,kRowHeight }, resultSubtract, " : Subtract");
-		vector->VectorScreenPrintf(Vector2{ 0.0f,kRowHeight * 2.0f }, resultMultiply, " : Multiply");
-		Novice::ScreenPrintf(0, static_cast<int>(kRowHeight * 3.0f), "%.02f : Dot", resultDot);
-		Novice::ScreenPrintf(0, static_cast<int>(kRowHeight * 4.0f), "%.02f : Length", resultLength);
-		vector->VectorScreenPrintf(Vector2{ 0.0f,kRowHeight * 5.0f }, resultNormalize, " : Normalize");
+		matrix->MatrixScreenPrintf(0, 0, worldMatrix);
 
 		///===================
 		/// ↑ 描画処理 ここまで

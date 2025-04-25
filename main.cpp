@@ -1,6 +1,7 @@
 #include <Novice.h>
 #include <memory>
-#include "MT3.h"
+#include "Vector.h"
+#include "Matrix.h"
 
 const char kWindowTitle[] = "LC1C_11_ダイドウソラ_MT3_00_04";
 

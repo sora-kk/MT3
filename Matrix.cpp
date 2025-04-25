@@ -1,69 +1,8 @@
-ï»¿#include "MT3.h"
+#include "Matrix.h"
 
 using namespace std;
 
-// 3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®åŠ ç®—
-Vector3 Vector::Add(const Vector3 &v1, const Vector3 &v2) {
-	Vector3 result = { v1.x + v2.x,v1.y + v2.y,v1.z + v2.z };
-	return result;
-}
-
-// 3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®æ¸›ç®—
-Vector3 Vector::Subtract(const Vector3 &v1, const Vector3 &v2) {
-	Vector3 result = { v1.x - v2.x,v1.y - v2.y,v1.z - v2.z };
-	return result;
-}
-
-// 3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®ä¹—ç®—(ã‚¹ã‚«ãƒ©ãƒ¼å€)
-Vector3 Vector::Multiply(float scalar, const Vector3 &v) {
-	Vector3 result = { scalar * v.x,scalar * v.y,scalar * v.z };
-	return result;
-}
-
-// 3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®å†…ç©
-float Vector::Dot(const Vector3 &v1, const Vector3 &v2) {
-	float result = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
-	return result;
-}
-
-// 3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®ãƒãƒ«ãƒ (é•·ã•)
-float Vector::Length(const Vector3 &v) {
-	float result = sqrtf({ v.x * v.x + v.y * v.y + v.z * v.z });
-	return result;
-}
-
-// 3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®æ­£è¦åŒ–
-Vector3 Vector::Normalize(const Vector3 &v) {
-	Vector3 result = { v.x / Length(v),v.y / Length(v),v.z / Length(v) };
-	return result;
-}
-
-// æç”»é–¢æ•°
-void Vector::VectorScreenPrintf(const Vector2 &pos, const Vector3 &vector, const char *label) {
-	Novice::ScreenPrintf(static_cast<int>(pos.x), static_cast<int>(pos.y), "%.02f", vector.x);
-	Novice::ScreenPrintf(static_cast<int>(pos.x + kColumnWidth), static_cast<int>(pos.y), "%.02f", vector.y);
-	Novice::ScreenPrintf(static_cast<int>(pos.x + kColumnWidth * 2), static_cast<int>(pos.y), "%.02f", vector.z);
-	Novice::ScreenPrintf(static_cast<int>(pos.x + kColumnWidth * 3), static_cast<int>(pos.y), "%s", label);
-}
-
-// 3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®åº§æ¨™å¤‰æ›
-Vector3 Vector::Transform(const Vector3 &vector, const Matrix4x4 &matrix) {
-	Vector3 result;
-
-	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
-	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
-	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + 1.0f * matrix.m[3][2];
-	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + 1.0f * matrix.m[3][3];
-
-	assert(w != 0.0f);
-	result.x /= w;
-	result.y /= w;
-	result.z /= w;
-
-	return Vector3();
-}
-
-// 4x4è¡Œåˆ—ã®åŠ æ³•
+// ‰Á–@
 Matrix4x4 Matrix::add(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	Matrix4x4 result{};
 
@@ -76,7 +15,7 @@ Matrix4x4 Matrix::add(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	return result;
 }
 
-// 4x4è¡Œåˆ—ã®æ¸›æ³•
+// Œ¸–@
 Matrix4x4 Matrix::Subtract(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	Matrix4x4 result{};
 
@@ -89,7 +28,7 @@ Matrix4x4 Matrix::Subtract(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	return result;
 }
 
-// 4x4è¡Œåˆ—ã®ç©
+// Ï
 Matrix4x4 Matrix::Multiply(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	Matrix4x4 result{};
 
@@ -104,7 +43,7 @@ Matrix4x4 Matrix::Multiply(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	return result;
 }
 
-// 4x4é€†è¡Œåˆ—
+// ‹ts—ñ
 Matrix4x4 Matrix::Inverse(const Matrix4x4 &m) {
 	Matrix4x4 result{};
 
@@ -237,7 +176,7 @@ Matrix4x4 Matrix::Inverse(const Matrix4x4 &m) {
 	return result;
 }
 
-// 4x4è»¢ç½®è¡Œåˆ—
+// “]’us—ñ
 Matrix4x4 Matrix::Transpose(const Matrix4x4 &m) {
 	Matrix4x4 result{};
 
@@ -250,7 +189,7 @@ Matrix4x4 Matrix::Transpose(const Matrix4x4 &m) {
 	return result;
 }
 
-// 4x4å˜ä½è¡Œåˆ—
+// ’PˆÊs—ñ
 Matrix4x4 Matrix::MakeIdentity4x4() {
 	Matrix4x4 result{};
 
@@ -261,16 +200,7 @@ Matrix4x4 Matrix::MakeIdentity4x4() {
 	return result;
 }
 
-// æç”»é–¢æ•°
-void Matrix::MatrixScreenPrintf(int x, int y, const Matrix4x4 &m) {
-	for (int row = 0; row < 4; ++row) {
-		for (int column = 0; column < 4; ++column) {
-			Novice::ScreenPrintf(x + column * kColumnWidth, y + row * kRowHeight, "%.02f", m.m[row][column]);
-		}
-	}
-}
-
-// 4x4å¹³è¡Œç§»å‹•è¡Œåˆ—
+// •½sˆÚ“®s—ñ
 Matrix4x4 Matrix::MakeTranslateMatrix(const Vector3 &translate) {
 	Matrix4x4 result = MakeIdentity4x4();
 
@@ -281,7 +211,7 @@ Matrix4x4 Matrix::MakeTranslateMatrix(const Vector3 &translate) {
 	return result;
 }
 
-// 4x4æ‹¡å¤§ç¸®å°è¡Œåˆ—
+// Šg‘åk¬s—ñ
 Matrix4x4 Matrix::MakeScaleMatrix(const Vector3 &scale) {
 	Matrix4x4 result = MakeIdentity4x4();
 
@@ -292,7 +222,7 @@ Matrix4x4 Matrix::MakeScaleMatrix(const Vector3 &scale) {
 	return result;
 }
 
-// 4x4Xè»¸å›è»¢è¡Œåˆ—
+// X²‰ñ“]s—ñ
 Matrix4x4 Matrix::MakeRotateXMatrix(float radian) {
 	Matrix4x4 result = MakeIdentity4x4();
 
@@ -304,7 +234,7 @@ Matrix4x4 Matrix::MakeRotateXMatrix(float radian) {
 	return result;
 }
 
-// 4x4Yè»¸å›è»¢è¡Œåˆ—
+// Y²‰ñ“]s—ñ
 Matrix4x4 Matrix::MakeRotateYMatrix(float radian) {
 	Matrix4x4 result = MakeIdentity4x4();
 
@@ -316,7 +246,7 @@ Matrix4x4 Matrix::MakeRotateYMatrix(float radian) {
 	return result;
 }
 
-// 4x4Zè»¸å›è»¢è¡Œåˆ—
+// Z²‰ñ“]s—ñ
 Matrix4x4 Matrix::MakeRotateZMatrix(float radian) {
 	Matrix4x4 result = MakeIdentity4x4();
 
@@ -328,6 +258,7 @@ Matrix4x4 Matrix::MakeRotateZMatrix(float radian) {
 	return result;
 }
 
+// ƒAƒtƒBƒ“•ÏŠ·s—ñ
 Matrix4x4 Matrix::MakeAffineMatrix(const Vector3 &scale, const Vector3 &rotate, const Vector3 &translate) {
 	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
 
@@ -340,4 +271,13 @@ Matrix4x4 Matrix::MakeAffineMatrix(const Vector3 &scale, const Vector3 &rotate, 
 
 	Matrix4x4 affineMatrix = Multiply(scaleMatrix, Multiply(rotateXYZMatrix, translateMatrix));
 	return affineMatrix;
+}
+
+// •`‰æŠÖ”
+void Matrix::MatrixScreenPrintf(int x, int y, const Matrix4x4 &m) {
+	for (int row = 0; row < 4; ++row) {
+		for (int column = 0; column < 4; ++column) {
+			Novice::ScreenPrintf(x + column * kColumnWidth, y + row * kRowHeight, "%.02f", m.m[row][column]);
+		}
+	}
 }

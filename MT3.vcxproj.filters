@@ -38,6 +38,12 @@
     <ClCompile Include="Matrix.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -133,13 +139,19 @@
     <ClInclude Include="Matrix3x3.h">
       <Filter>ヘッダーファイル\Matrix</Filter>
     </ClInclude>
-    <ClInclude Include="matrix4x4.h">
+    <ClInclude Include="Matrix4x4.h">
       <Filter>ヘッダーファイル\Matrix</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h">
-      <Filter>ヘッダーファイル</Filter>
+      <Filter>ヘッダーファイル\Matrix</Filter>
     </ClInclude>
     <ClInclude Include="Vector.h">
+      <Filter>ヘッダーファイル\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

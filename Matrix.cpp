@@ -269,7 +269,7 @@ Matrix4x4 Matrix::MakeAffineMatrix(const Vector3 &scale, const Vector3 &rotate, 
 
 	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
 
-	Matrix4x4 affineMatrix = Multiply(scaleMatrix, Multiply(rotateXYZMatrix, translateMatrix));
+	Matrix4x4 affineMatrix = Multiply(Multiply(translateMatrix, rotateXYZMatrix), scaleMatrix);
 	return affineMatrix;
 }
 
@@ -348,12 +348,12 @@ Matrix4x4 Matrix::MakeViewportMatrix(float left, float top, float width, float h
 
 	result.m[2][0] = 0.0f;
 	result.m[2][1] = 0.0f;
-	result.m[2][2] = maxDepth - minDepth;
+	result.m[2][2] = (maxDepth - minDepth) / 2.0f;
 	result.m[2][3] = 0.0f;
 
 	result.m[3][0] = left + width / 2.0f;
 	result.m[3][1] = top + height / 2.0f;
-	result.m[3][2] = minDepth;
+	result.m[3][2] = (maxDepth + minDepth) / 2.0f;
 	result.m[3][3] = 1.0f;
 
 	return result;

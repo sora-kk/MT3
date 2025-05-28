@@ -25,19 +25,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// ↓ 変数の宣言と初期化
 	///====================
 
-	Vector vector;
+	//Vector vector;
 	Matrix matrix;
 	Grid grid;
 	Sphere sphere;
 
-	Segment segment = { {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
-	Vector3 point = { -1.5f,0.6f,0.6f };
-
-	Vector3 project = vector.Project(vector.Subtract(point, segment.origin), segment.diff);
-	Vector3 closestPoint = vector.ClosestPoint(point, segment);
-
-	SphereData pointSphere{ point,0.01f };
-	SphereData closestPointSphere{ closestPoint,0.01f };
+	SphereData sphere1{ {0.0f,0.0f,0.0f},0.6f };
+	SphereData sphere2{ {-1.0f,0.0f,-1.0f},0.4f };
 
 	Vector3 scale{ 1.0f,1.0f,1.0f };
 	Vector3 rotate{ 0.0f,0.0f,0.0f };
@@ -70,10 +64,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// ImGuiを呼び出す
 		ImGui::Begin("Window");
-		ImGui::InputFloat3("Point", &point.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputFloat3("Segment origin", &segment.origin.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputFloat3("Segment diff", &segment.diff.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputFloat3("Project", &project.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
+		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
+		ImGui::DragFloat3("Sphere1 Center", &sphere1.center.x, 0.01f);
+		ImGui::DragFloat("Sphere1 Radius", &sphere1.radius, 0.01f);
+		ImGui::DragFloat3("Sphere2 Center", &sphere2.center.x, 0.01f);
+		ImGui::DragFloat("Sphere2 Radius", &sphere2.radius, 0.01f);
 		ImGui::End();
 
 		// 各種行列の計算
@@ -83,10 +79,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 projectionMatrix = matrix.MakePerspectiveFovMatrix(0.45f, kWindowWidth / kWindowHeight, 0.1f, 100.0f);
 		Matrix4x4 worldViewProjectionMatrix = matrix.Multiply(worldMatrix, matrix.Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = matrix.MakeViewportMatrix(0.0f, 0.0f, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
-		
-		// 線分の始点と終点
-		Vector3 start = vector.Transform(vector.Transform(segment.origin, worldViewProjectionMatrix), viewportMatrix);
-		Vector3 end = vector.Transform(vector.Transform(vector.Add(segment.origin,segment.diff), worldViewProjectionMatrix), viewportMatrix);
 
 		///===================
 		/// ↑ 更新処理 ここまで
@@ -99,12 +91,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッド
 		grid.DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
-		// 線分
-		Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), WHITE);
-
 		// 球体
-		sphere.DrawSphere(pointSphere, worldViewProjectionMatrix, viewportMatrix, RED);
-		sphere.DrawSphere(closestPointSphere, worldViewProjectionMatrix, viewportMatrix, BLACK);
+		if (sphere.IsCollision(sphere1, sphere2)) {
+			sphere.DrawSphere(sphere1, worldViewProjectionMatrix, viewportMatrix, RED);
+		} else {
+			sphere.DrawSphere(sphere1, worldViewProjectionMatrix, viewportMatrix, WHITE);
+		}
+		sphere.DrawSphere(sphere2, worldViewProjectionMatrix, viewportMatrix, WHITE);
 
 		///===================
 		/// ↑ 描画処理 ここまで

@@ -1,5 +1,15 @@
 ﻿#include "Sphere.h"
 
+bool Sphere::IsCollision(const SphereData &s1, const SphereData &s2) {
+    float distance = vector.Length(vector.Subtract(s2.center, s1.center));
+
+	if (distance <= s1.radius + s2.radius) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 void Sphere::DrawSphere(const SphereData &sphere, const Matrix4x4 &viewProjectionMatrix, const Matrix4x4 &viewportMatrix, uint32_t color) {
 	for (uint32_t latIndex = 0; latIndex < kSubdivision; latIndex++) {
 		float lat = -pi / 2.0f + kLatEvery * latIndex;

@@ -14,6 +14,8 @@ struct SphereData {
 
 class Sphere {
 public:
+	bool IsCollision(const SphereData &s1, const SphereData &s2);
+
 	void DrawSphere(const SphereData &sphere, const Matrix4x4 &viewProjectionMatrix, const Matrix4x4 &viewportMatrix, uint32_t color);
 
 private:

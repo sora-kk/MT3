@@ -73,3 +73,32 @@ Vector3 Vector::Cross(const Vector3 &v1, const Vector3 &v2) {
 
 	return result;
 }
+
+// 
+Vector3 Vector::Project(const Vector3 &v1, const Vector3 &v2) {
+	float dotProduct = Dot(v1, v2);
+	float lengthSqV2 = Dot(v2, v2);
+
+	if (lengthSqV2 == 0.0f) {
+		return Vector3{ 0.0f,0.0f,0.0f };
+	}
+
+	Vector3 result = Multiply(dotProduct / lengthSqV2, v2);
+
+	return result;
+}
+
+// 
+Vector3 Vector::ClosestPoint(const Vector3 &point, const Segment &segment) {
+	Vector3 segmentVector = Subtract(segment.diff, segment.origin);
+
+	Vector3 pointToOrigin = Subtract(point, segment.origin);
+
+	float t = Dot(pointToOrigin, segmentVector) / Dot(segmentVector, segmentVector);
+
+	t = fmaxf(0.0f, fminf(1.0f, t));
+
+	Vector3 closest = Add(segment.origin, Multiply(t, segmentVector));
+
+	return closest;
+}

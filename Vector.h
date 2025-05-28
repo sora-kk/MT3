@@ -2,6 +2,7 @@
 #include <Novice.h>
 #include <cmath>
 #include <assert.h>
+#include "Line.h"
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Matrix4x4.h"
@@ -34,6 +35,12 @@ public:
 
 	// クロス積
 	Vector3 Cross(const Vector3 &v1, const Vector3 &v2);
+
+	// 
+	Vector3 Project(const Vector3 &v1, const Vector3 &v2);
+
+	// 
+	Vector3 ClosestPoint(const Vector3 &point, const Segment &segment);
 
 private:
 	static const int kRowHeight = 20;

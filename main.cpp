@@ -25,11 +25,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// ↓ 変数の宣言と初期化
 	///====================
 
+	Vector vector;
 	Matrix matrix;
 	Grid grid;
 	Sphere sphere;
 
-	SphereData sphereData = { {0.0f,0.0f,0.0f},0.5f };
+	Segment segment = { {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
+	Vector3 point = { -1.5f,0.6f,0.6f };
+
+	Vector3 project = vector.Project(vector.Subtract(point, segment.origin), segment.diff);
+	Vector3 closestPoint = vector.ClosestPoint(point, segment);
+
+	SphereData pointSphere{ point,0.01f };
+	SphereData closestPointSphere{ closestPoint,0.01f };
 
 	Vector3 scale{ 1.0f,1.0f,1.0f };
 	Vector3 rotate{ 0.0f,0.0f,0.0f };
@@ -62,10 +70,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// ImGuiを呼び出す
 		ImGui::Begin("Window");
-		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
-		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("SphereCenter", &sphereData.center.x, 0.01f);
-		ImGui::DragFloat("SphereRadius", &sphereData.radius, 0.01f);
+		ImGui::InputFloat3("Point", &point.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat3("Segment origin", &segment.origin.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat3("Segment diff", &segment.diff.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat3("Project", &project.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
 		ImGui::End();
 
 		// 各種行列の計算
@@ -76,6 +84,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldViewProjectionMatrix = matrix.Multiply(worldMatrix, matrix.Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = matrix.MakeViewportMatrix(0.0f, 0.0f, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
 		
+		// 線分の始点と終点
+		Vector3 start = vector.Transform(vector.Transform(segment.origin, worldViewProjectionMatrix), viewportMatrix);
+		Vector3 end = vector.Transform(vector.Transform(vector.Add(segment.origin,segment.diff), worldViewProjectionMatrix), viewportMatrix);
 
 		///===================
 		/// ↑ 更新処理 ここまで
@@ -88,8 +99,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッド
 		grid.DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
+		// 線分
+		Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), WHITE);
+
 		// 球体
-		sphere.DrawSphere(sphereData, worldViewProjectionMatrix, viewportMatrix, 0xFFFFFFFF);
+		sphere.DrawSphere(pointSphere, worldViewProjectionMatrix, viewportMatrix, RED);
+		sphere.DrawSphere(closestPointSphere, worldViewProjectionMatrix, viewportMatrix, BLACK);
 
 		///===================
 		/// ↑ 描画処理 ここまで

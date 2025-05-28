@@ -42,6 +42,9 @@ public:
 	// 
 	Vector3 ClosestPoint(const Vector3 &point, const Segment &segment);
 
+	// 
+	Vector3 Perpendicular(const Vector3 &vector);
+
 private:
 	static const int kRowHeight = 20;
 	static const int kColumnWidth = 60;

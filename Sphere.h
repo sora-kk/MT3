@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <cmath>
 #include <numbers>
+#include "Plane.h"
 #include "Vector.h"
 #include "Vector3.h"
 #include "Matrix4x4.h"
@@ -15,6 +16,8 @@ struct SphereData {
 class Sphere {
 public:
 	bool IsCollision(const SphereData &s1, const SphereData &s2);
+
+	bool IsCollision(const SphereData &sphere, const PlaneData &plane);
 
 	void DrawSphere(const SphereData &sphere, const Matrix4x4 &viewProjectionMatrix, const Matrix4x4 &viewportMatrix, uint32_t color);
 

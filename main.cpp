@@ -5,6 +5,7 @@
 #include "Matrix.h"
 #include "Grid.h"
 #include "Sphere.h"
+#include "Plane.h"
 
 const char kWindowTitle[] = "LC1C_11_ダイドウソラ_MT3_01_00";
 
@@ -25,13 +26,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// ↓ 変数の宣言と初期化
 	///====================
 
-	//Vector vector;
+	Vector vector;
 	Matrix matrix;
 	Grid grid;
 	Sphere sphere;
+	Plane plane;
 
 	SphereData sphere1{ {0.0f,0.0f,0.0f},0.6f };
-	SphereData sphere2{ {-1.0f,0.0f,-1.0f},0.4f };
+
+	PlaneData plane1{ {0.0f,1.0f,0.0f},1.0f };
 
 	Vector3 scale{ 1.0f,1.0f,1.0f };
 	Vector3 rotate{ 0.0f,0.0f,0.0f };
@@ -68,9 +71,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		ImGui::DragFloat3("Sphere1 Center", &sphere1.center.x, 0.01f);
 		ImGui::DragFloat("Sphere1 Radius", &sphere1.radius, 0.01f);
-		ImGui::DragFloat3("Sphere2 Center", &sphere2.center.x, 0.01f);
-		ImGui::DragFloat("Sphere2 Radius", &sphere2.radius, 0.01f);
+		ImGui::DragFloat3("Plane Normal", &plane1.normal.x, 0.01f);
+		ImGui::DragFloat("Plane Distance", &plane1.distance, 0.01f);
 		ImGui::End();
+
+		plane1.normal = vector.Normalize(plane1.normal);
 
 		// 各種行列の計算
 		Matrix4x4 worldMatrix = matrix.MakeAffineMatrix(scale, rotate, translate);
@@ -92,12 +97,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		grid.DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
 		// 球体
-		if (sphere.IsCollision(sphere1, sphere2)) {
+		if (sphere.IsCollision(sphere1, plane1)) {
 			sphere.DrawSphere(sphere1, worldViewProjectionMatrix, viewportMatrix, RED);
 		} else {
 			sphere.DrawSphere(sphere1, worldViewProjectionMatrix, viewportMatrix, WHITE);
 		}
-		sphere.DrawSphere(sphere2, worldViewProjectionMatrix, viewportMatrix, WHITE);
+
+		// 平面
+		plane.DrawPlane(plane1, worldViewProjectionMatrix, viewportMatrix, WHITE);
 
 		///===================
 		/// ↑ 描画処理 ここまで

@@ -6,6 +6,7 @@
 #include "Grid.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "IsHit.h"
 
 const char kWindowTitle[] = "LC1C_11_ダイドウソラ_MT3_01_00";
 
@@ -31,9 +32,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Grid grid;
 	Sphere sphere;
 	Plane plane;
+	IsHit isHit;
 
-	SphereData sphere1{ {0.0f,0.0f,0.0f},0.6f };
-
+	Segment segment{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
+	//SphereData sphere1{ {0.0f,0.0f,0.0f},0.6f };
 	PlaneData plane1{ {0.0f,1.0f,0.0f},1.0f };
 
 	Vector3 scale{ 1.0f,1.0f,1.0f };
@@ -69,8 +71,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("Sphere1 Center", &sphere1.center.x, 0.01f);
-		ImGui::DragFloat("Sphere1 Radius", &sphere1.radius, 0.01f);
+		ImGui::DragFloat3("Segment Origin", &segment.origin.x, 0.01f);
+		ImGui::DragFloat3("Segment Diff", &segment.diff.x, 0.01f);
 		ImGui::DragFloat3("Plane Normal", &plane1.normal.x, 0.01f);
 		ImGui::DragFloat("Plane Distance", &plane1.distance, 0.01f);
 		ImGui::End();
@@ -85,6 +87,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldViewProjectionMatrix = matrix.Multiply(worldMatrix, matrix.Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = matrix.MakeViewportMatrix(0.0f, 0.0f, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
 
+		Vector3 start = vector.Transform(vector.Transform(segment.origin, worldViewProjectionMatrix), viewportMatrix);
+		Vector3 end = vector.Transform(vector.Transform(vector.Add(segment.origin, segment.diff), worldViewProjectionMatrix), viewportMatrix);
+
 		///===================
 		/// ↑ 更新処理 ここまで
 		///===================
@@ -96,11 +101,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッド
 		grid.DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
-		// 球体
-		if (sphere.IsCollision(sphere1, plane1)) {
-			sphere.DrawSphere(sphere1, worldViewProjectionMatrix, viewportMatrix, RED);
+		// 線分
+		if (isHit.IsCollision(segment, plane1)) {
+			Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), RED);
 		} else {
-			sphere.DrawSphere(sphere1, worldViewProjectionMatrix, viewportMatrix, WHITE);
+			Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), WHITE);
 		}
 
 		// 平面

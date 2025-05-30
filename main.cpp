@@ -6,6 +6,7 @@
 #include "Grid.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "Triangle.h"
 #include "IsHit.h"
 
 const char kWindowTitle[] = "LC1C_11_ダイドウソラ_MT3_01_00";
@@ -30,13 +31,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector vector;
 	Matrix matrix;
 	Grid grid;
-	Sphere sphere;
-	Plane plane;
+	//Sphere sphere;
+	//Plane plane;
+	Triangle triangle;
 	IsHit isHit;
 
-	Segment segment{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
+	Segment segment{ {-1.0f,-1.0f,0.0f},{1.5f,1.0f,1.0f} };
 	//SphereData sphere1{ {0.0f,0.0f,0.0f},0.6f };
-	PlaneData plane1{ {0.0f,1.0f,0.0f},1.0f };
+	//PlaneData plane1{ {0.0f,1.0f,0.0f},1.0f };
+	TriangleData triangle1;
+	triangle1.vertices[0] = { -1.0f,0.0f,0.0f };
+	triangle1.vertices[1] = { 0.0f,-1.0f,0.0f };
+	triangle1.vertices[2] = { 1.0f,0.0f,0.0f };
 
 	Vector3 scale{ 1.0f,1.0f,1.0f };
 	Vector3 rotate{ 0.0f,0.0f,0.0f };
@@ -73,22 +79,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		ImGui::DragFloat3("Segment Origin", &segment.origin.x, 0.01f);
 		ImGui::DragFloat3("Segment Diff", &segment.diff.x, 0.01f);
-		ImGui::DragFloat3("Plane Normal", &plane1.normal.x, 0.01f);
-		ImGui::DragFloat("Plane Distance", &plane1.distance, 0.01f);
 		ImGui::End();
-
-		plane1.normal = vector.Normalize(plane1.normal);
 
 		// 各種行列の計算
 		Matrix4x4 worldMatrix = matrix.MakeAffineMatrix(scale, rotate, translate);
 		Matrix4x4 cameraMatrix = matrix.MakeAffineMatrix(cameraScale, cameraRotate, cameraTranslate);
 		Matrix4x4 viewMatrix = matrix.Inverse(cameraMatrix);
 		Matrix4x4 projectionMatrix = matrix.MakePerspectiveFovMatrix(0.45f, kWindowWidth / kWindowHeight, 0.1f, 100.0f);
-		Matrix4x4 worldViewProjectionMatrix = matrix.Multiply(worldMatrix, matrix.Multiply(viewMatrix, projectionMatrix));
+		Matrix4x4 viewProjectionMatrix = matrix.Multiply(worldMatrix, matrix.Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = matrix.MakeViewportMatrix(0.0f, 0.0f, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
 
-		Vector3 start = vector.Transform(vector.Transform(segment.origin, worldViewProjectionMatrix), viewportMatrix);
-		Vector3 end = vector.Transform(vector.Transform(vector.Add(segment.origin, segment.diff), worldViewProjectionMatrix), viewportMatrix);
+		// 線の始点と終点
+		Vector3 start = vector.Transform(vector.Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
+		Vector3 end = vector.Transform(vector.Transform(vector.Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
 
 		///===================
 		/// ↑ 更新処理 ここまで
@@ -99,17 +102,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///===================
 
 		// グリッド
-		grid.DrawGrid(worldViewProjectionMatrix, viewportMatrix);
+		grid.DrawGrid(viewProjectionMatrix, viewportMatrix);
 
 		// 線分
-		if (isHit.IsCollision(segment, plane1)) {
+		if (isHit.IsCollision(triangle1, segment)) {
 			Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), RED);
 		} else {
 			Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), WHITE);
 		}
 
-		// 平面
-		plane.DrawPlane(plane1, worldViewProjectionMatrix, viewportMatrix, WHITE);
+		// 三角形
+		triangle.DrawTriangle(triangle1, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		///===================
 		/// ↑ 描画処理 ここまで

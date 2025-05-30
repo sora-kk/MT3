@@ -1,4 +1,4 @@
-#include "Plane.h"
+﻿#include "Plane.h"
 
 void Plane::DrawPlane(const PlaneData &plane, const Matrix4x4 &viewProjectionMatrix, const Matrix4x4 &viewportMatrix, uint32_t color) {
 	Vector3 center = vector.Multiply(plane.distance, plane.normal);

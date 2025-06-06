@@ -9,8 +9,8 @@ void Grid::DrawGrid(const Matrix4x4 &viewProjectionMatrix, const Matrix4x4 &view
 		Vector3 end = { x,0.0f,kGridHalfWidth };
 		
 		// スクリーン座標系まで変換
-		Vector3 screenStart = vector.Transform(vector.Transform(start, viewProjectionMatrix), viewportMatrix);
-		Vector3 screenEnd = vector.Transform(vector.Transform(end, viewProjectionMatrix), viewportMatrix);
+		Vector3 screenStart = math.Transform(math.Transform(start, viewProjectionMatrix), viewportMatrix);
+		Vector3 screenEnd = math.Transform(math.Transform(end, viewProjectionMatrix), viewportMatrix);
 		
 		// 線を描画
 		Novice::DrawLine(static_cast<int>(screenStart.x), static_cast<int>(screenStart.y),
@@ -33,8 +33,8 @@ void Grid::DrawGrid(const Matrix4x4 &viewProjectionMatrix, const Matrix4x4 &view
 		Vector3 end = { kGridHalfWidth,0.0f,z };
 
 		// スクリーン座標系まで変換
-		Vector3 screenStart = vector.Transform(vector.Transform(start, viewProjectionMatrix), viewportMatrix);
-		Vector3 screenEnd = vector.Transform(vector.Transform(end, viewProjectionMatrix), viewportMatrix);
+		Vector3 screenStart = math.Transform(math.Transform(start, viewProjectionMatrix), viewportMatrix);
+		Vector3 screenEnd = math.Transform(math.Transform(end, viewProjectionMatrix), viewportMatrix);
 
 		// 線を描画
 		Novice::DrawLine(static_cast<int>(screenStart.x), static_cast<int>(screenStart.y),

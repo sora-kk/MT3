@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Vector.h"
+#include "Math.h"
 #include "Sphere.h"
 #include "Plane.h"
 #include "Line.h"
@@ -20,5 +20,5 @@ public:
 	bool IsCollision(const TriangleData &triangle, const Segment &segment);
 
 private:
-	Vector vector;
+	Math math;
 };

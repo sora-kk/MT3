@@ -4,7 +4,7 @@
 #include <cmath>
 #include <numbers>
 #include "Plane.h"
-#include "Vector.h"
+#include "Math.h"
 #include "Vector3.h"
 #include "Matrix4x4.h"
 
@@ -22,5 +22,5 @@ private:
 	float pi = std::numbers::pi_v<float>;
 	const float kLonEvery = pi * 2.0f / static_cast<float>(kSubdivision);
 	const float kLatEvery = pi / static_cast<float>(kSubdivision);
-	Vector vector;
+	Math math;
 };

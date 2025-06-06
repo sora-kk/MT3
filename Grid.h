@@ -2,7 +2,7 @@
 #include <Novice.h>
 #include <stdint.h>
 #include "Matrix4x4.h"
-#include "Vector.h"
+#include "Math.h"
 
 class Grid {
 public:
@@ -13,5 +13,5 @@ private:
 	const uint32_t kSubdivision = 10;
 	const float kGridEvery = (kGridHalfWidth * 2.0f) / static_cast<float>(kSubdivision);
 
-	Vector vector;
+	Math math;
 };

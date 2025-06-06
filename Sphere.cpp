@@ -24,9 +24,9 @@ void Sphere::DrawSphere(const SphereData &sphere, const Matrix4x4 &viewProjectio
 			};
 
 			// スクリーン座標系まで変換
-			Vector3 screenA = vector.Transform(vector.Transform(a, viewProjectionMatrix), viewportMatrix);
-			Vector3 screenB = vector.Transform(vector.Transform(b, viewProjectionMatrix), viewportMatrix);
-			Vector3 screenC = vector.Transform(vector.Transform(c, viewProjectionMatrix), viewportMatrix);
+			Vector3 screenA = math.Transform(math.Transform(a, viewProjectionMatrix), viewportMatrix);
+			Vector3 screenB = math.Transform(math.Transform(b, viewProjectionMatrix), viewportMatrix);
+			Vector3 screenC = math.Transform(math.Transform(c, viewProjectionMatrix), viewportMatrix);
 
 			// ab,bcで線を引く
 			Novice::DrawLine(static_cast<int>(screenA.x), static_cast<int>(screenA.y), static_cast<int>(screenB.x), static_cast<int>(screenB.y), color);

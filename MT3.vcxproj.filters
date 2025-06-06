@@ -32,12 +32,6 @@
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp">
       <Filter>KamataEngine\Adapter</Filter>
     </ClCompile>
-    <ClCompile Include="Vector.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Grid.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
@@ -51,6 +45,9 @@
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Triangle.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Math.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -151,12 +148,6 @@
     <ClInclude Include="Matrix4x4.h">
       <Filter>ヘッダーファイル\Matrix</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>ヘッダーファイル\Matrix</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>ヘッダーファイル\Vector</Filter>
-    </ClInclude>
     <ClInclude Include="Grid.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
@@ -173,6 +164,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Triangle.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

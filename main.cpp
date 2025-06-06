@@ -1,8 +1,7 @@
 #include <Novice.h>
 #include <memory>
 #include <imgui.h>
-#include "Vector.h"
-#include "Matrix.h"
+#include "Math.h"
 #include "Grid.h"
 #include "Sphere.h"
 #include "Plane.h"
@@ -28,8 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// ↓ 変数の宣言と初期化
 	///====================
 
-	Vector vector;
-	Matrix matrix;
+	Math math;
 	Grid grid;
 	//Sphere sphere;
 	//Plane plane;
@@ -82,16 +80,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::End();
 
 		// 各種行列の計算
-		Matrix4x4 worldMatrix = matrix.MakeAffineMatrix(scale, rotate, translate);
-		Matrix4x4 cameraMatrix = matrix.MakeAffineMatrix(cameraScale, cameraRotate, cameraTranslate);
-		Matrix4x4 viewMatrix = matrix.Inverse(cameraMatrix);
-		Matrix4x4 projectionMatrix = matrix.MakePerspectiveFovMatrix(0.45f, kWindowWidth / kWindowHeight, 0.1f, 100.0f);
-		Matrix4x4 viewProjectionMatrix = matrix.Multiply(worldMatrix, matrix.Multiply(viewMatrix, projectionMatrix));
-		Matrix4x4 viewportMatrix = matrix.MakeViewportMatrix(0.0f, 0.0f, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
+		Matrix4x4 worldMatrix = math.MakeAffineMatrix(scale, rotate, translate);
+		Matrix4x4 cameraMatrix = math.MakeAffineMatrix(cameraScale, cameraRotate, cameraTranslate);
+		Matrix4x4 viewMatrix = math.Inverse(cameraMatrix);
+		Matrix4x4 projectionMatrix = math.MakePerspectiveFovMatrix(0.45f, kWindowWidth / kWindowHeight, 0.1f, 100.0f);
+		Matrix4x4 viewProjectionMatrix = math.Multiply(worldMatrix, math.Multiply(viewMatrix, projectionMatrix));
+		Matrix4x4 viewportMatrix = math.MakeViewportMatrix(0.0f, 0.0f, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
 
 		// 線の始点と終点
-		Vector3 start = vector.Transform(vector.Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
-		Vector3 end = vector.Transform(vector.Transform(vector.Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
+		Vector3 start = math.Transform(math.Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
+		Vector3 end = math.Transform(math.Transform(math.Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
 
 		///===================
 		/// ↑ 更新処理 ここまで

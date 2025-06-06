@@ -1,9 +1,109 @@
-﻿#include "Matrix.h"
+﻿#include "Math.h"
 
-using namespace std;
+// 加算
+Vector3 Math::Add(const Vector3 &v1, const Vector3 &v2) {
+	Vector3 result = { v1.x + v2.x,v1.y + v2.y,v1.z + v2.z };
+	return result;
+}
+
+// 減算
+Vector3 Math::Subtract(const Vector3 &v1, const Vector3 &v2) {
+	Vector3 result = { v1.x - v2.x,v1.y - v2.y,v1.z - v2.z };
+	return result;
+}
+
+// 乗算(スカラー倍)
+Vector3 Math::Multiply(float scalar, const Vector3 &v) {
+	Vector3 result = { scalar * v.x,scalar * v.y,scalar * v.z };
+	return result;
+}
+
+// 内積
+float Math::Dot(const Vector3 &v1, const Vector3 &v2) {
+	float result = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+	return result;
+}
+
+// ノルム(長さ)
+float Math::Length(const Vector3 &v) {
+	float result = sqrtf({ v.x * v.x + v.y * v.y + v.z * v.z });
+	return result;
+}
+
+// 正規化
+Vector3 Math::Normalize(const Vector3 &v) {
+	Vector3 result = { v.x / Length(v),v.y / Length(v),v.z / Length(v) };
+	return result;
+}
+
+// 座標変換
+Vector3 Math::Transform(const Vector3 &vector, const Matrix4x4 &matrix) {
+	Vector3 result{};
+
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
+	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + 1.0f * matrix.m[3][2];
+	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + 1.0f * matrix.m[3][3];
+
+	assert(w != 0.0f);
+	result.x /= w;
+	result.y /= w;
+	result.z /= w;
+
+	return result;
+}
+
+// クロス積
+Vector3 Math::Cross(const Vector3 &v1, const Vector3 &v2) {
+	Vector3 result{};
+
+	result.x = v1.y * v2.z - v1.z * v2.y;
+	result.y = v1.z * v2.x - v1.x * v2.z;
+	result.z = v1.x * v2.y - v1.y * v2.x;
+
+	return result;
+}
+
+// 
+Vector3 Math::Project(const Vector3 &v1, const Vector3 &v2) {
+	float dotProduct = Dot(v1, v2);
+	float lengthSqV2 = Dot(v2, v2);
+
+	if (lengthSqV2 == 0.0f) {
+		return Vector3{ 0.0f,0.0f,0.0f };
+	}
+
+	Vector3 result = Multiply(dotProduct / lengthSqV2, v2);
+
+	return result;
+}
+
+// 
+Vector3 Math::ClosestPoint(const Vector3 &point, const Segment &segment) {
+	Vector3 segmentVector = Subtract(segment.diff, segment.origin);
+
+	Vector3 pointToOrigin = Subtract(point, segment.origin);
+
+	float t = Dot(pointToOrigin, segmentVector) / Dot(segmentVector, segmentVector);
+
+	t = fmaxf(0.0f, fminf(1.0f, t));
+
+	Vector3 closest = Add(segment.origin, Multiply(t, segmentVector));
+
+	return closest;
+}
+
+// 
+Vector3 Math::Perpendicular(const Vector3 &vector) {
+	if (vector.x != 0.0f || vector.y != 0.0f) {
+		return{ -vector.y,vector.x,0.0f };
+	}
+
+	return { 0.0f,-vector.z,vector.y };
+}
 
 // 加法
-Matrix4x4 Matrix::add(const Matrix4x4 &m1, const Matrix4x4 &m2) {
+Matrix4x4 Math::add(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	Matrix4x4 result{};
 
 	for (int i = 0; i < 4; i++) {
@@ -16,7 +116,7 @@ Matrix4x4 Matrix::add(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 }
 
 // 減法
-Matrix4x4 Matrix::Subtract(const Matrix4x4 &m1, const Matrix4x4 &m2) {
+Matrix4x4 Math::Subtract(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	Matrix4x4 result{};
 
 	for (int i = 0; i < 4; i++) {
@@ -29,7 +129,7 @@ Matrix4x4 Matrix::Subtract(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 }
 
 // 積
-Matrix4x4 Matrix::Multiply(const Matrix4x4 &m1, const Matrix4x4 &m2) {
+Matrix4x4 Math::Multiply(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 	Matrix4x4 result{};
 
 	for (int i = 0; i < 4; i++) {
@@ -44,7 +144,7 @@ Matrix4x4 Matrix::Multiply(const Matrix4x4 &m1, const Matrix4x4 &m2) {
 }
 
 // 逆行列
-Matrix4x4 Matrix::Inverse(const Matrix4x4 &m) {
+Matrix4x4 Math::Inverse(const Matrix4x4 &m) {
 	Matrix4x4 result{};
 	float determinant =
 		m.m[0][0] * m.m[1][1] * m.m[2][2] * m.m[3][3]
@@ -194,7 +294,7 @@ Matrix4x4 Matrix::Inverse(const Matrix4x4 &m) {
 }
 
 // 転置行列
-Matrix4x4 Matrix::Transpose(const Matrix4x4 &m) {
+Matrix4x4 Math::Transpose(const Matrix4x4 &m) {
 	Matrix4x4 result{};
 
 	for (int i = 0; i < 4; i++) {
@@ -207,7 +307,7 @@ Matrix4x4 Matrix::Transpose(const Matrix4x4 &m) {
 }
 
 // 単位行列
-Matrix4x4 Matrix::MakeIdentity4x4() {
+Matrix4x4 Math::MakeIdentity4x4() {
 	Matrix4x4 result{};
 
 	for (int i = 0; i < 4; i++) {
@@ -218,7 +318,7 @@ Matrix4x4 Matrix::MakeIdentity4x4() {
 }
 
 // 平行移動行列
-Matrix4x4 Matrix::MakeTranslateMatrix(const Vector3 &translate) {
+Matrix4x4 Math::MakeTranslateMatrix(const Vector3 &translate) {
 	Matrix4x4 result = MakeIdentity4x4();
 
 	result.m[3][0] = translate.x;
@@ -229,7 +329,7 @@ Matrix4x4 Matrix::MakeTranslateMatrix(const Vector3 &translate) {
 }
 
 // 拡大縮小行列
-Matrix4x4 Matrix::MakeScaleMatrix(const Vector3 &scale) {
+Matrix4x4 Math::MakeScaleMatrix(const Vector3 &scale) {
 	Matrix4x4 result = MakeIdentity4x4();
 
 	result.m[0][0] = scale.x;
@@ -240,7 +340,7 @@ Matrix4x4 Matrix::MakeScaleMatrix(const Vector3 &scale) {
 }
 
 // X軸回転行列
-Matrix4x4 Matrix::MakeRotateXMatrix(float radian) {
+Matrix4x4 Math::MakeRotateXMatrix(float radian) {
 	Matrix4x4 result = MakeIdentity4x4();
 
 	result.m[1][1] = cos(radian);
@@ -252,7 +352,7 @@ Matrix4x4 Matrix::MakeRotateXMatrix(float radian) {
 }
 
 // Y軸回転行列
-Matrix4x4 Matrix::MakeRotateYMatrix(float radian) {
+Matrix4x4 Math::MakeRotateYMatrix(float radian) {
 	Matrix4x4 result = MakeIdentity4x4();
 
 	result.m[0][0] = cos(radian);
@@ -264,7 +364,7 @@ Matrix4x4 Matrix::MakeRotateYMatrix(float radian) {
 }
 
 // Z軸回転行列
-Matrix4x4 Matrix::MakeRotateZMatrix(float radian) {
+Matrix4x4 Math::MakeRotateZMatrix(float radian) {
 	Matrix4x4 result = MakeIdentity4x4();
 
 	result.m[0][0] = cos(radian);
@@ -276,7 +376,7 @@ Matrix4x4 Matrix::MakeRotateZMatrix(float radian) {
 }
 
 // アフィン変換行列
-Matrix4x4 Matrix::MakeAffineMatrix(const Vector3 &scale, const Vector3 &rotate, const Vector3 &translate) {
+Matrix4x4 Math::MakeAffineMatrix(const Vector3 &scale, const Vector3 &rotate, const Vector3 &translate) {
 	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
 
 	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
@@ -291,7 +391,7 @@ Matrix4x4 Matrix::MakeAffineMatrix(const Vector3 &scale, const Vector3 &rotate, 
 }
 
 // 透視投影行列
-Matrix4x4 Matrix::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
+Matrix4x4 Math::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
 	Matrix4x4 result{};
 	float f = 1.0f / tan(fovY / 2.0f);
 	float fRange = farClip / (farClip - nearClip);
@@ -320,7 +420,7 @@ Matrix4x4 Matrix::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float 
 }
 
 // 正射影行列
-Matrix4x4 Matrix::MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip) {
+Matrix4x4 Math::MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip) {
 	Matrix4x4 result{};
 	float width = right - left;
 	float height = top - bottom;
@@ -350,7 +450,7 @@ Matrix4x4 Matrix::MakeOrthographicMatrix(float left, float top, float right, flo
 }
 
 // ビューポート変換
-Matrix4x4 Matrix::MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth) {
+Matrix4x4 Math::MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth) {
 	Matrix4x4 result{};
 
 	result.m[0][0] = width / 2.0f;
@@ -377,7 +477,15 @@ Matrix4x4 Matrix::MakeViewportMatrix(float left, float top, float width, float h
 }
 
 // 描画関数
-void Matrix::ScreenPrintf(int x, int y, const Matrix4x4 &m) {
+void Math::ScreenPrintf(const Vector2 &pos, const Vector3 &vector, const char *label) {
+	Novice::ScreenPrintf(static_cast<int>(pos.x), static_cast<int>(pos.y), "%.02f", vector.x);
+	Novice::ScreenPrintf(static_cast<int>(pos.x + kColumnWidth), static_cast<int>(pos.y), "%.02f", vector.y);
+	Novice::ScreenPrintf(static_cast<int>(pos.x + kColumnWidth * 2), static_cast<int>(pos.y), "%.02f", vector.z);
+	Novice::ScreenPrintf(static_cast<int>(pos.x + kColumnWidth * 3), static_cast<int>(pos.y), "%s", label);
+}
+
+// 描画関数
+void Math::ScreenPrintf(int x, int y, const Matrix4x4 &m) {
 	for (int row = 0; row < 4; ++row) {
 		for (int column = 0; column < 4; ++column) {
 			Novice::ScreenPrintf(x + column * kColumnWidth, y + row * kRowHeight, "%.02f", m.m[row][column]);

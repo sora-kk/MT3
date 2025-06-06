@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <Novice.h>
 #include <stdint.h>
-#include "Vector.h"
+#include "Math.h"
 #include "Vector3.h"
 #include "Matrix4x4.h"
 
@@ -14,5 +14,5 @@ public:
 	void DrawTriangle(const TriangleData &triangle, const Matrix4x4 &viewProjectionMatrix, const Matrix4x4 &viewportMatrix, uint32_t color);
 
 private:
-	Vector vector;
+	Math math;
 };

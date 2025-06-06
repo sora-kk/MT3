@@ -70,7 +70,6 @@ bool IsHit::IsCollision(const TriangleData &triangle, const Segment &segment) {
     Vector3 intersectionPoint = math.Add(startPoint, math.Multiply(t, math.Subtract(endPoint, startPoint)));
 
     // 交点が三角形の内部にあるかを判定
-
     edge[0] = math.Subtract(triangle.vertices[1], triangle.vertices[0]);
     Vector3 edge1ToIntersection = math.Subtract(intersectionPoint, triangle.vertices[0]);
     if (math.Dot(triangleNormal, math.Cross(edge[0], edge1ToIntersection)) < 0.0f) {
@@ -90,4 +89,18 @@ bool IsHit::IsCollision(const TriangleData &triangle, const Segment &segment) {
     }
 
     return true;
+}
+
+bool IsHit::IsCollision(const AABBData &aabb1, const AABBData &aabb2) {
+    // 各軸での衝突判定
+    bool xOverlap = aabb1.max.x >= aabb2.min.x && aabb1.min.x <= aabb2.max.x;
+    bool yOverlap = aabb1.max.y >= aabb2.min.y && aabb1.min.y <= aabb2.max.y;
+    bool zOverlap = aabb1.max.z >= aabb2.min.z && aabb1.min.z <= aabb2.max.z;
+
+    // 全ての軸で重なっている場合、衝突している
+    if (xOverlap && yOverlap && zOverlap) {
+        return true;
+    }
+
+    return false;
 }

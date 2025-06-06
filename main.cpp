@@ -6,6 +6,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Triangle.h"
+#include "AABB.h"
 #include "IsHit.h"
 
 const char kWindowTitle[] = "LC1C_11_ダイドウソラ_MT3_01_00";
@@ -29,18 +30,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Math math;
 	Grid grid;
+	IsHit isHit;
 	//Sphere sphere;
 	//Plane plane;
-	Triangle triangle;
-	IsHit isHit;
+	//Triangle triangle;
+	AABB aabb;
 
-	Segment segment{ {-1.0f,-1.0f,0.0f},{1.5f,1.0f,1.0f} };
+	//Segment segment{ {-1.0f,-1.0f,0.0f},{1.5f,1.0f,1.0f} };
 	//SphereData sphere1{ {0.0f,0.0f,0.0f},0.6f };
 	//PlaneData plane1{ {0.0f,1.0f,0.0f},1.0f };
-	TriangleData triangle1;
+	/*TriangleData triangle1;
 	triangle1.vertices[0] = { -1.0f,0.0f,0.0f };
 	triangle1.vertices[1] = { 0.0f,-1.0f,0.0f };
-	triangle1.vertices[2] = { 1.0f,0.0f,0.0f };
+	triangle1.vertices[2] = { 1.0f,0.0f,0.0f };*/
+
+	AABBData aabb1{
+		.min{-0.5f,-0.5f,-0.5f},
+		.max{0.0f,0.0f,0.0f}
+	};
+
+	AABBData aabb2{
+		.min{0.2f,0.2f,0.2f},
+		.max{1.0f,1.0f,1.0f}
+	};
 
 	Vector3 scale{ 1.0f,1.0f,1.0f };
 	Vector3 rotate{ 0.0f,0.0f,0.0f };
@@ -75,9 +87,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("Segment Origin", &segment.origin.x, 0.01f);
-		ImGui::DragFloat3("Segment Diff", &segment.diff.x, 0.01f);
+		ImGui::DragFloat3("AABB1 Min", &aabb1.min.x, 0.01f);
+		ImGui::DragFloat3("AABB1 Max", &aabb1.max.x, 0.01f);
+		ImGui::DragFloat3("AABB2 Min", &aabb2.min.x, 0.01f);
+		ImGui::DragFloat3("AABB2 Max", &aabb2.max.x, 0.01f);
 		ImGui::End();
+
+		// minとmaxが入れ替わらないように処理
+		aabb1.min.x = (std::min)(aabb1.min.x, aabb1.max.x);
+		aabb1.min.y = (std::min)(aabb1.min.y, aabb1.max.y);
+		aabb1.min.z = (std::min)(aabb1.min.z, aabb1.max.z);
+		aabb1.max.x = (std::max)(aabb1.min.x, aabb1.max.x);
+		aabb1.max.y = (std::max)(aabb1.min.y, aabb1.max.y);
+		aabb1.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
+
+		aabb2.min.x = (std::min)(aabb2.min.x, aabb2.max.x);
+		aabb2.min.y = (std::min)(aabb2.min.y, aabb2.max.y);
+		aabb2.min.z = (std::min)(aabb2.min.z, aabb2.max.z);
+		aabb2.max.x = (std::max)(aabb2.min.x, aabb2.max.x);
+		aabb2.max.y = (std::max)(aabb2.min.y, aabb2.max.y);
+		aabb2.max.z = (std::max)(aabb2.min.z, aabb2.max.z);
 
 		// 各種行列の計算
 		Matrix4x4 worldMatrix = math.MakeAffineMatrix(scale, rotate, translate);
@@ -88,8 +117,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = math.MakeViewportMatrix(0.0f, 0.0f, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
 
 		// 線の始点と終点
-		Vector3 start = math.Transform(math.Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
-		Vector3 end = math.Transform(math.Transform(math.Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
+		//Vector3 start = math.Transform(math.Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
+		//Vector3 end = math.Transform(math.Transform(math.Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
 
 		///===================
 		/// ↑ 更新処理 ここまで
@@ -102,15 +131,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッド
 		grid.DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		// 線分
-		if (isHit.IsCollision(triangle1, segment)) {
-			Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), RED);
+		if (isHit.IsCollision(aabb1, aabb2)) {
+			aabb.DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, RED);
 		} else {
-			Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), WHITE);
+			aabb.DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, WHITE);
 		}
+		
+		aabb.DrawAABB(aabb2, viewProjectionMatrix, viewportMatrix, WHITE);
 
-		// 三角形
-		triangle.DrawTriangle(triangle1, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		///===================
 		/// ↑ 描画処理 ここまで

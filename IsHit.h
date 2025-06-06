@@ -4,6 +4,7 @@
 #include "Plane.h"
 #include "Line.h"
 #include "Triangle.h"
+#include "AABB.h"
 
 class IsHit {
 public:
@@ -18,6 +19,9 @@ public:
 
 	// 三角形と線
 	bool IsCollision(const TriangleData &triangle, const Segment &segment);
+
+	// AABBとAABB
+	bool IsCollision(const AABBData &aabb1, const AABBData &aabb2);
 
 private:
 	Math math;

@@ -23,6 +23,9 @@ public:
 	// AABBとAABB
 	bool IsCollision(const AABBData &aabb1, const AABBData &aabb2);
 
+	// AABBと球
+	bool IsCollision(const AABBData &aabb, const SphereData &sphere);
+
 private:
 	Math math;
 };

@@ -31,13 +31,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Math math;
 	Grid grid;
 	IsHit isHit;
-	//Sphere sphere;
+	Sphere sphere;
 	//Plane plane;
 	//Triangle triangle;
 	AABB aabb;
 
 	//Segment segment{ {-1.0f,-1.0f,0.0f},{1.5f,1.0f,1.0f} };
-	//SphereData sphere1{ {0.0f,0.0f,0.0f},0.6f };
+	SphereData sphere1{ {0.0f,0.0f,0.0f},0.6f };
 	//PlaneData plane1{ {0.0f,1.0f,0.0f},1.0f };
 	/*TriangleData triangle1;
 	triangle1.vertices[0] = { -1.0f,0.0f,0.0f };
@@ -49,10 +49,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		.max{0.0f,0.0f,0.0f}
 	};
 
-	AABBData aabb2{
+	/*AABBData aabb2{
 		.min{0.2f,0.2f,0.2f},
 		.max{1.0f,1.0f,1.0f}
-	};
+	};*/
 
 	Vector3 scale{ 1.0f,1.0f,1.0f };
 	Vector3 rotate{ 0.0f,0.0f,0.0f };
@@ -89,8 +89,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		ImGui::DragFloat3("AABB1 Min", &aabb1.min.x, 0.01f);
 		ImGui::DragFloat3("AABB1 Max", &aabb1.max.x, 0.01f);
-		ImGui::DragFloat3("AABB2 Min", &aabb2.min.x, 0.01f);
-		ImGui::DragFloat3("AABB2 Max", &aabb2.max.x, 0.01f);
+		ImGui::DragFloat3("Sphere1 Center", &sphere1.center.x, 0.01f);
+		ImGui::DragFloat("Sphere1 Radius", &sphere1.radius, 0.01f);
 		ImGui::End();
 
 		// minとmaxが入れ替わらないように処理
@@ -100,13 +100,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		aabb1.max.x = (std::max)(aabb1.min.x, aabb1.max.x);
 		aabb1.max.y = (std::max)(aabb1.min.y, aabb1.max.y);
 		aabb1.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
-
-		aabb2.min.x = (std::min)(aabb2.min.x, aabb2.max.x);
-		aabb2.min.y = (std::min)(aabb2.min.y, aabb2.max.y);
-		aabb2.min.z = (std::min)(aabb2.min.z, aabb2.max.z);
-		aabb2.max.x = (std::max)(aabb2.min.x, aabb2.max.x);
-		aabb2.max.y = (std::max)(aabb2.min.y, aabb2.max.y);
-		aabb2.max.z = (std::max)(aabb2.min.z, aabb2.max.z);
 
 		// 各種行列の計算
 		Matrix4x4 worldMatrix = math.MakeAffineMatrix(scale, rotate, translate);
@@ -131,13 +124,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッド
 		grid.DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		if (isHit.IsCollision(aabb1, aabb2)) {
+		if (isHit.IsCollision(aabb1, sphere1)) {
 			aabb.DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, RED);
 		} else {
 			aabb.DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, WHITE);
 		}
 		
-		aabb.DrawAABB(aabb2, viewProjectionMatrix, viewportMatrix, WHITE);
+		sphere.DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, WHITE);
 
 
 		///===================

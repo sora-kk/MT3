@@ -1,4 +1,6 @@
-﻿#include "IsHit.h"
+﻿#define NOMINMAX
+#include <algorithm>
+#include "IsHit.h"
 
 bool IsHit::IsCollision(const SphereData &sphere1, const SphereData &sphere2) {
     // 2つの球の中心間の距離を計算
@@ -103,4 +105,19 @@ bool IsHit::IsCollision(const AABBData &aabb1, const AABBData &aabb2) {
     }
 
     return false;
+}
+
+bool IsHit::IsCollision(const AABBData &aabb, const SphereData &sphere) {
+    // AABBの最も近い点を計算
+    Vector3 closestPoint{
+        std::max(aabb.min.x, std::min(sphere.center.x, aabb.max.x)),
+        std::max(aabb.min.y, std::min(sphere.center.y, aabb.max.y)),
+        std::max(aabb.min.z, std::min(sphere.center.z, aabb.max.z))
+    };
+
+    // 最も近い点と球の中心の距離を計算
+    float distance = math.Length(math.Subtract(closestPoint, sphere.center));
+
+    // 距離が球の半径以下であれば衝突している
+    return distance <= sphere.radius;
 }

@@ -26,6 +26,9 @@ public:
 	// AABBと球
 	bool IsCollision(const AABBData &aabb, const SphereData &sphere);
 
+	// AABBと線分
+	bool IsCollision(const AABBData &aabb, const Segment &segment);
+
 private:
 	Math math;
 };

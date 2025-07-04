@@ -121,3 +121,40 @@ bool IsHit::IsCollision(const AABBData &aabb, const SphereData &sphere) {
     // 距離が球の半径以下であれば衝突している
     return distance <= sphere.radius;
 }
+
+bool IsHit::IsCollision(const AABBData &aabb, const Segment &segment) {
+    Vector3 startPoint = segment.origin;
+    Vector3 endPoint = math.Add(segment.origin, segment.diff);
+    Vector3 direction = segment.diff;
+
+    float tMin = 0.0f;
+    float tMax = 1.0f;
+
+    // 各軸ごとに処理
+    for (int axis = 0; axis < 3; ++axis) {
+        float start, dir, min, max;
+        if (axis == 0) { // x軸
+            start = startPoint.x; dir = direction.x; min = aabb.min.x; max = aabb.max.x;
+        } else if (axis == 1) { // y軸
+            start = startPoint.y; dir = direction.y; min = aabb.min.y; max = aabb.max.y;
+        } else { // z軸
+            start = startPoint.z; dir = direction.z; min = aabb.min.z; max = aabb.max.z;
+        }
+
+        if (std::abs(dir) < 1e-6f) {
+            if (start < min || start > max) {
+                return false;
+            }
+        } else {
+            float t1 = (min - start) / dir;
+            float t2 = (max - start) / dir;
+            if (t1 > t2) std::swap(t1, t2);
+            tMin = std::max(tMin, t1);
+            tMax = std::min(tMax, t2);
+            if (tMin > tMax) {
+                return false;
+            }
+        }
+    }
+    return true;
+}

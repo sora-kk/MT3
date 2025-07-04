@@ -36,8 +36,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Triangle triangle;
 	AABB aabb;
 
-	//Segment segment{ {-1.0f,-1.0f,0.0f},{1.5f,1.0f,1.0f} };
-	SphereData sphere1{ {0.0f,0.0f,0.0f},0.6f };
+	Segment segment{ {-1.0f,-1.0f,0.0f},{1.5f,1.0f,1.0f} };
+	//SphereData sphere1{ {0.0f,0.0f,0.0f},0.6f };
 	//PlaneData plane1{ {0.0f,1.0f,0.0f},1.0f };
 	/*TriangleData triangle1;
 	triangle1.vertices[0] = { -1.0f,0.0f,0.0f };
@@ -89,8 +89,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		ImGui::DragFloat3("AABB1 Min", &aabb1.min.x, 0.01f);
 		ImGui::DragFloat3("AABB1 Max", &aabb1.max.x, 0.01f);
-		ImGui::DragFloat3("Sphere1 Center", &sphere1.center.x, 0.01f);
-		ImGui::DragFloat("Sphere1 Radius", &sphere1.radius, 0.01f);
+		ImGui::DragFloat3("Sphere1 Center", &segment.origin.x, 0.01f);
 		ImGui::End();
 
 		// minとmaxが入れ替わらないように処理
@@ -110,8 +109,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = math.MakeViewportMatrix(0.0f, 0.0f, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
 
 		// 線の始点と終点
-		//Vector3 start = math.Transform(math.Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
-		//Vector3 end = math.Transform(math.Transform(math.Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
+		Vector3 start = math.Transform(math.Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
+		Vector3 end = math.Transform(math.Transform(math.Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
 
 		///===================
 		/// ↑ 更新処理 ここまで
@@ -124,14 +123,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッド
 		grid.DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		if (isHit.IsCollision(aabb1, sphere1)) {
+		if (isHit.IsCollision(aabb1, segment)) {
 			aabb.DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, RED);
 		} else {
 			aabb.DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, WHITE);
 		}
 		
-		sphere.DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, WHITE);
-
+		Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), WHITE);
 
 		///===================
 		/// ↑ 描画処理 ここまで
